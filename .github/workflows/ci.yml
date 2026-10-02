@@ -1,0 +1,20 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install GMP
+        run: sudo apt-get update && sudo apt-get install -y libgmp-dev
+      - name: Build the lrs and lrsgmp binaries
+        run: make lrs lrsgmp
+      - name: Smoke test on the cube
+        run: |
+          ./lrsgmp cube.ine /dev/stdout | tail -3
+          ./lrs cube.ine /dev/stdout | tail -3
